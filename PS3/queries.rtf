@@ -1,0 +1,39 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2512
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 SELECT\
+  publications.publication_number as publication_number,\
+  publications.filing_date as filing_date,\
+  cpc.code as cpc_code\
+FROM\
+  `patents-public-data.patents.publications` as publications,\
+  UNNEST(cpc) AS cpc\
+WHERE\
+  cpc.code = 'G06Q30/06'\
+  AND publications.filing_date >= 20160101\
+  AND publications.filing_date <= 20161231\
+\
+\
+SELECT\
+  publications.publication_number as publication_number,\
+  publications.filing_date as filing_date,\
+  citation.publication_number as citation_publication_number\
+FROM\
+  `patents-public-data.patents.publications` as publications,\
+  UNNEST(citation) as citation\
+WHERE publications.filing_date >= 20160101 AND publications.filing_date <= 20201231 AND\
+citation.publication_number IN (\
+  SELECT\
+    publications.publication_number as publication_number\
+  FROM\
+    `patents-public-data.patents.publications` as publications,\
+    UNNEST(cpc) AS cpc\
+  WHERE\
+    cpc.code = 'G06Q30/06'\
+    AND publications.filing_date >= 20160101\
+    AND publications.filing_date <= 20161231 \
+  )}
